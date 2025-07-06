@@ -1,0 +1,6 @@
+@HttpClientFactoryCustom_HostAddress = http://localhost:5034
+
+GET {{HttpClientFactoryCustom_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
