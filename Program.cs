@@ -1,3 +1,7 @@
+using HttpClientFactoryCustom.Repository;
+using Microsoft.AspNetCore.Connections;
+using Microsoft.Extensions.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,8 +24,17 @@ builder.Services.AddHttpClient("ExternalApiClient", client =>
 
     return handler;
 });
+// Unit of work Factory
+builder.Services.AddSingleton<ConnectionStringProvider>();
+builder.Services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
 
-
+// Register factory delegate for UnitOfWork
+builder.Services.AddTransient<Func<DatabaseName, IUnitOfWork>>(serviceProvider => dbName =>
+{
+    var factory = serviceProvider.GetRequiredService<ISqlConnectionFactory>();
+    return new UnitOfWork(factory, dbName);
+});
+// Unit of work Factory
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
