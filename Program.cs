@@ -1,4 +1,5 @@
 using HttpClientFactoryCustom.Repository;
+using HttpClientFactoryCustom.Repository.UnitOfWork;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,12 +28,18 @@ builder.Services.AddHttpClient("ExternalApiClient", client =>
 // Unit of work Factory
 builder.Services.AddSingleton<ConnectionStringProvider>();
 builder.Services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
+builder.Services.AddSingleton<IOraclelConnectionFactory, OracleConnectionFactory>();
 
 // Register factory delegate for UnitOfWork
 builder.Services.AddTransient<Func<DatabaseName, IUnitOfWork>>(serviceProvider => dbName =>
 {
     var factory = serviceProvider.GetRequiredService<ISqlConnectionFactory>();
     return new UnitOfWork(factory, dbName);
+});
+builder.Services.AddTransient<Func<DatabaseName, IOracleUnitOfWork>>(serviceProvider => dbName =>
+{
+    var factory = serviceProvider.GetRequiredService<IOraclelConnectionFactory>();
+    return new OracleUnitOfWork(factory, dbName);
 });
 // Unit of work Factory
 var app = builder.Build();

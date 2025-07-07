@@ -6,7 +6,7 @@ public interface IUnitOfWork : IDisposable
     void BeginTransaction();
     void Commit();
     void Rollback();
-
+    Task SaveChangesAsync(); 
     Task<int> ExecuteAsync(string procName, DynamicParameters parameters);
     Task<T> QuerySingleAsync<T>(string procName, DynamicParameters parameters);
     Task<IEnumerable<T>> QueryAsync<T>(string procName, DynamicParameters parameters);

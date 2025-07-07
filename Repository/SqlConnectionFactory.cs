@@ -5,17 +5,17 @@ namespace HttpClientFactoryCustom.Repository
 {
     public class SqlConnectionFactory : ISqlConnectionFactory
     {
-        private readonly ConnectionStringProvider _connectionStringProvider;
+        private readonly ConnectionStringProvider _provider;
 
-        public SqlConnectionFactory(ConnectionStringProvider connectionStringProvider)
+        public SqlConnectionFactory(ConnectionStringProvider provider)
         {
-            _connectionStringProvider = connectionStringProvider;
+            _provider = provider;
         }
 
-        public IDbConnection CreateConnection(DatabaseName dbName)
+        public IDbConnection CreateConnection(DatabaseName db)
         {
-            var connStr = _connectionStringProvider.GetConnectionString(dbName);
-            return new SqlConnection(connStr);
+            return new SqlConnection(_provider.GetConnectionString(db));
         }
     }
+
 }
